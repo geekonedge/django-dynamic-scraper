@@ -253,7 +253,7 @@ class RequestPageType(models.Model):
     )
     help_text = "One main page RPT, an optional follow page RPT (if follow pagination is used) and detail page RPTs for all DETAIL_PAGE_URLs"
     page_type = models.CharField(max_length=3, choices=TYPE_CHOICES, help_text=help_text)
-    scraped_obj_attr = models.ForeignKey(ScrapedObjAttr, blank=True, null=True, help_text="Empty for main page, attribute of type DETAIL_PAGE_URL scraped from main page for detail pages.")
+    scraped_obj_attr = models.ForeignKey(ScrapedObjAttr, blank=True, null=True, help_text="Empty for main page, attribute of type DETAIL_PAGE_URL scraped from main page for detail pages.", on_delete=models.CASCADE)
     scraper = models.ForeignKey(Scraper, on_delete=models.SET_NULL)
     content_type = models.CharField(max_length=1, choices=CONTENT_TYPE_CHOICES, default='H', help_text="Data type format for scraped pages of page type (for JSON use JSONPath instead of XPath)")
     render_javascript = models.BooleanField(default=False, help_text="Render Javascript on pages (ScrapyJS/Splash deployment needed, careful: resource intense)")
@@ -297,7 +297,7 @@ class ScraperElem(models.Model):
     REQUEST_PAGE_TYPE_CHOICES = tuple([("MP", "Main Page")] + [("DP{n}".format(n=str(n)), "Detail Page {n}".format(n=str(n))) for n in list(range(1, 26))])
     help_text = "The different attributes to be scraped, exactly one attribute of type BASE necessary."
     scraped_obj_attr = models.ForeignKey(ScrapedObjAttr, help_text=help_text, on_delete=models.SET_NULL)
-    scraper = models.ForeignKey(Scraper)   
+    scraper = models.ForeignKey(Scraper, on_delete=models.SET_NULL)   
     x_path = models.TextField(blank=True, help_text='XPath or JSONPath expression, leave blank on "static" processor use.')
     reg_exp = models.TextField(blank=True, help_text="Optional filtering by regular expression (e.g. 'Scrape only (.*) the text in between').")
     help_text = "Corresponding Request Page Types created for this scraper."
